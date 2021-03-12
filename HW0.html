@@ -1,0 +1,107 @@
+<html>
+<head>
+	<title> GameProgramming HW0 </title>
+	<style>
+		#info {
+	  position: absolute;
+	  top: 0px;
+	  width: 100%;
+	  padding: 10px;
+	  text-align: center;
+	  color: #ffff00
+	}
+
+	body {
+	  overflow: hidden;
+	}
+	</style>
+</head>
+<body>
+	<div id="info">minimal three.js
+	<br>
+	<button id="train_toggle">Toggle Turn</button>
+	</div>
+	<script src="https://threejs.org/build/three.min.js"></script>
+	<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script>
+		var camera, scene, renderer,train,angle=1.57079,clock,time=0,motion=true,chimey,tbody;
+
+	init();
+	animate();
+
+	$("#train_toggle").click(function() {
+	motion = !motion;
+	});
+
+	function init() {
+
+	scene = new THREE.Scene();
+	clock = new THREE.Clock();
+	renderer = new THREE.WebGLRenderer();
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	renderer.setClearColor(0x888888);
+	document.body.appendChild(renderer.domElement);
+
+	camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
+	camera.position.z=400;
+	camera.position.y=200;
+  
+	train = new THREE.Group();
+	tbody = new THREE.Mesh(new THREE.BoxGeometry(10,10,30),new THREE.MeshNormalMaterial());
+	chimey = new THREE.Mesh(new THREE.CylinderGeometry(4,4,20,16),new THREE.MeshNormalMaterial());
+	chimey.position.z=-10;
+	chimey.position.y=4;
+	train.add(tbody,chimey);
+	let controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+	////////////////////////////////////////////////////////////////
+	var gridXZ = new THREE.GridHelper(400, 20, 'red', 'white');
+	train.position.set(100,5,-60);
+	scene.add(gridXZ);
+	scene.add(train);
+	}
+
+	function animate() {
+	
+	var radius=50,dis=-1; 
+	if(motion==true)
+	{
+		if(time<=97)
+		{
+			var x=train.position.x+(3.07693*2/3*dis);
+     		train.rotation.y=angle=1.57079;
+			train.position.set(x,5,-50);
+			time++;
+		}
+		else if (time<=173 && time>97)
+		{
+			train.position.set((radius*Math.cos(angle))-100,5,-radius*Math.sin(angle));
+			train.rotation.y=angle;
+			angle+=0.031415926*4/3;
+			time++;
+		}
+		else if(time<=270 && time >173)
+		{
+     		var x=train.position.x-(3.07693*2/3*dis);
+     		train.rotation.y=angle=4.71237;
+			train.position.set(x,5,50);
+			time++;
+		}
+		else if (time<=345 && time>270)
+		{
+			train.position.set((radius*Math.cos(angle))+100,5,-radius*Math.sin(angle));
+			train.rotation.y=angle;
+			angle+=0.031415926*4/3;
+			time++;
+		}
+		else if(time >345){
+			time=0;
+		}
+	}
+	requestAnimationFrame(animate);
+	renderer.render(scene,camera);
+	}
+	</script>
+</body>
+</html>
